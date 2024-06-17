@@ -10,14 +10,14 @@ services:
       - mongo-data:/data/db
 
   app:
-    image: my-app-mongo
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: my-app:latest
+    container_name: application
     ports:
       - "8080:8080"
     depends_on:
       - mongo
+    environment:
+        SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/testDB
 
 volumes:
   mongo-data:
