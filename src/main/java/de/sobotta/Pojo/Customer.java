@@ -12,13 +12,17 @@ public class Customer {
     @DBRef
     private Address address;
 
+    @DBRef
+    private PaymentMethod paymentMethod;
+
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, Address address) {
+    public Customer(String firstName, String lastName, Address address, PaymentMethod paymentMethod) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
+        this.paymentMethod = paymentMethod;
     }
 
     public String getId() {
@@ -51,5 +55,13 @@ public class Customer {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }
