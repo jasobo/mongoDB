@@ -3,57 +3,51 @@ package de.sobotta.service;
 import de.sobotta.Pojo.Address;
 import de.sobotta.Pojo.Customer;
 import de.sobotta.Pojo.PaymentMethod;
-import de.sobotta.repository.AddressMongoDBRepository;
-import de.sobotta.repository.BankMongoDBRepository;
-import de.sobotta.repository.CustomerMongoDBRepository;
-import de.sobotta.repository.PaymentMongoDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 @Service
 public class CustomerService {
 
-    private final CustomerMongoDBRepository customerMongoDBRepository;
-    private final AddressMongoDBRepository addressMongoDBRepository;
-    private final PaymentMongoDBRepository paymentMongoDBRepository;
-    private final BankMongoDBRepository bankMongoDBRepository;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public CustomerService(CustomerMongoDBRepository customerMongoDBRepository, AddressMongoDBRepository addressMongoDBRepository, PaymentMongoDBRepository paymentMongoDBRepository, BankMongoDBRepository bankMongoDBRepository) {
-        this.customerMongoDBRepository = customerMongoDBRepository;
-        this.addressMongoDBRepository = addressMongoDBRepository;
-        this.paymentMongoDBRepository = paymentMongoDBRepository;
-        this.bankMongoDBRepository = bankMongoDBRepository;
+    public CustomerService(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
     }
 
     public List<Customer> getAllCustomers() {
-        return customerMongoDBRepository.findAll();
+        return mongoTemplate.findAll(Customer.class);
     }
 
     public void createCustomer(Customer customer) {
         if (customer.getAddress() != null) {
-            addressMongoDBRepository.save(customer.getAddress());
+            mongoTemplate.save(customer.getAddress());
         }
         if (customer.getPaymentMethod() != null){
             savePaymentMethod(customer.getPaymentMethod());
         }
-        customerMongoDBRepository.save(customer);
+        mongoTemplate.save(customer);
     }
 
     public Optional<Customer> getCustomerById(String id) {
-        return customerMongoDBRepository.findById(id);
+        return Optional.ofNullable(mongoTemplate.findById(id, Customer.class));
     }
 
     public List<Customer> getByLastName(String name) {
-        return customerMongoDBRepository.findByLastName(name);
+        return mongoTemplate.find(query(where("lastName").is(name)), Customer.class);
     }
 
 
     public void updateCustomer(String id, Customer customer) {
-        Optional<Customer> existingCustomerOpt = customerMongoDBRepository.findById(id);
+        Optional<Customer> existingCustomerOpt = getCustomerById(id);
         if(existingCustomerOpt.isPresent()) {
             Customer existingCustomer = existingCustomerOpt.get();
 
@@ -63,20 +57,19 @@ public class CustomerService {
             updateAddress(existingCustomer, customer.getAddress());
             updatePaymentMethod(existingCustomer, customer.getPaymentMethod());
 
-            customerMongoDBRepository.save(existingCustomer);
+            mongoTemplate.save(existingCustomer);
         } else {
             throw new RuntimeException("Customer not found with id " + id);
         }
     }
 
-
     public void delete(String id) {
-        customerMongoDBRepository.deleteById(id);
+        mongoTemplate.remove(query(where("_id").is(id)), Customer.class);
     }
 
     private void updateAddress(Customer existingCustomer, Address newAddress) {
         if (newAddress != null) {
-            addressMongoDBRepository.save(newAddress);
+            mongoTemplate.save(newAddress);
             existingCustomer.setAddress(newAddress);
         }
     }
@@ -84,18 +77,18 @@ public class CustomerService {
     private void updatePaymentMethod(Customer existingCustomer, PaymentMethod newPaymentMethod) {
         if (newPaymentMethod != null) {
             if (newPaymentMethod.getBank() != null) {
-                bankMongoDBRepository.save(newPaymentMethod.getBank());
+                mongoTemplate.save(newPaymentMethod.getBank());
                 newPaymentMethod.setBank(newPaymentMethod.getBank());
             }
-            paymentMongoDBRepository.save(newPaymentMethod);
+            mongoTemplate.save(newPaymentMethod);
             existingCustomer.setPaymentMethod(newPaymentMethod);
         }
     }
 
     private void savePaymentMethod(PaymentMethod paymentMethod) {
         if (paymentMethod.getBank() != null) {
-            bankMongoDBRepository.save(paymentMethod.getBank());
+            mongoTemplate.save(paymentMethod.getBank());
         }
-        paymentMongoDBRepository.save(paymentMethod);
+        mongoTemplate.save(paymentMethod);
     }
 }
