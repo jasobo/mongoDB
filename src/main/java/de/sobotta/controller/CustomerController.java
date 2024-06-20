@@ -1,7 +1,6 @@
 package de.sobotta.controller;
 
 import de.sobotta.DTO.CustomerDTO;
-import de.sobotta.Pojo.Customer;
 import de.sobotta.Response.CustomerResponse;
 import de.sobotta.service.CustomerService;
 import jakarta.validation.Valid;

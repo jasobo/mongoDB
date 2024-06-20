@@ -1,10 +1,13 @@
 package de.sobotta.service;
 
 import de.sobotta.DTO.CustomerDTO;
-import de.sobotta.Pojo.Customer;
+import de.sobotta.Entity.Customer;
 import de.sobotta.Response.CustomerResponse;
 import de.sobotta.repository.CustomerMongoDBRepository;
 import de.sobotta.util.CustomerMapper;
+import de.sobotta.util.GlobalExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ public class CustomerService {
 
     private final CustomerMapper mapper = CustomerMapper.INSTANCE;
     private final CustomerMongoDBRepository customerMongoDBRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     @Autowired
     public CustomerService(CustomerMongoDBRepository customerMongoDBRepository) {
@@ -36,17 +40,15 @@ public class CustomerService {
         for (Customer customer : allCustomers) {
             customerResponses.add(mapper.forResponse(customer));
         }
+        logger.info("All customers found");
         return customerResponses;
     }
 
     public void createCustomer(CustomerDTO customerDTO) {
-        System.out.println("Creating new customer: " + customerDTO);
-
         Customer customer = mapper.toPojo(customerDTO);
         customer.setId(generateCustomId());
+        logger.info("Customer created with id {}", customer.getId());
         customerMongoDBRepository.save(customer);
-
-        System.out.println("Customer created: " + customer);
     }
 
     public CustomerDTO getCustomerById(String id) {
@@ -57,6 +59,7 @@ public class CustomerService {
     }
 
     public List<CustomerResponse> getByLastName(String name) {
+        logger.info("Searching for customer with last name {}",name);
         return customerMongoDBRepository.findByLastName(name)
                 .stream()
                 .map(mapper::forResponse)
@@ -65,21 +68,32 @@ public class CustomerService {
 
 
     public void updateCustomer(String id, CustomerDTO customerDTO) {
-        Optional<Customer> existingCustomerOpt = customerMongoDBRepository.findById(id);
-        if(existingCustomerOpt.isPresent()) {
-            Customer existingCustomer = existingCustomerOpt.get();
-            Customer updatedCustomer = mapper.toPojo(customerDTO);
-            updatedCustomer.setId(existingCustomer.getId());
+        try {
+            Optional<Customer> existingCustomerOpt = customerMongoDBRepository.findById(id);
+            if (existingCustomerOpt.isPresent()) {
+                Customer existingCustomer = existingCustomerOpt.get();
+                Customer updatedCustomer = mapper.toPojo(customerDTO);
+                updatedCustomer.setId(existingCustomer.getId());
 
-            customerMongoDBRepository.save(updatedCustomer);
-        } else {
-            throw new RuntimeException("Customer not found with id " + id);
+                customerMongoDBRepository.save(updatedCustomer);
+                logger.info("Customer with id {} updated successfully.", id);
+            } else {
+                logger.error("Customer not found with id {}", id);
+                throw new GlobalExceptionHandler.NotFoundException("Customer not found with id " + id);
+            }
+        } catch (GlobalExceptionHandler.NotFoundException ex) {
+            logger.error("Failed to update customer with id: {}", id, ex);
+            throw ex;
+        } catch (Exception ex) {
+            logger.error("Unexpected error while updating customer with id: {}", id, ex);
+            throw new RuntimeException("Unexpected error while updating customer with id " + id, ex);
         }
     }
 
+
     public void delete(String id) {
         if (!customerMongoDBRepository.existsById(id)) {
-            throw new RuntimeException("Customer not found with id " + id);
+            throw new GlobalExceptionHandler.NotFoundException("Customer not found with id " + id);
         }
         customerMongoDBRepository.deleteById(id);
     }

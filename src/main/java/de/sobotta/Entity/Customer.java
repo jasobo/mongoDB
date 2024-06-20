@@ -1,4 +1,4 @@
-package de.sobotta.Pojo;
+package de.sobotta.Entity;
 
 
 import org.springframework.data.mongodb.core.mapping.Document;

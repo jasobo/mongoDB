@@ -1,4 +1,4 @@
-package de.sobotta.Pojo;
+package de.sobotta.Entity;
 
 public class Address {
     private String street;

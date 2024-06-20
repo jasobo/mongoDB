@@ -1,6 +1,6 @@
 package de.sobotta.repository;
 
-import de.sobotta.Pojo.Customer;
+import de.sobotta.Entity.Customer;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

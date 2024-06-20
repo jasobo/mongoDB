@@ -1,7 +1,7 @@
 package de.sobotta.util;
 
 import de.sobotta.DTO.CustomerDTO;
-import de.sobotta.Pojo.Customer;
+import de.sobotta.Entity.Customer;
 import de.sobotta.Response.CustomerResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
