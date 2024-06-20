@@ -1,16 +1,17 @@
-package de.sobotta.Pojo;
+package de.sobotta.DTO;
 
-public class Address {
+public class AddressDTO {
+
     private String street;
     private String houseNumber;
     private String zip;
     private String city;
     private String country;
 
-    public Address() {
+    public AddressDTO() {
     }
 
-    public Address(String street, String houseNumber, String zip, String city, String country) {
+    public AddressDTO(String street, String houseNumber, String zip, String city, String country) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.zip = zip;
@@ -60,7 +61,7 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address{" +
+        return "AddressDTO{" +
                 "street='" + street + '\'' +
                 ", houseNumber='" + houseNumber + '\'' +
                 ", zip='" + zip + '\'' +
@@ -69,3 +70,4 @@ public class Address {
                 '}';
     }
 }
+

@@ -1,33 +1,27 @@
-package de.sobotta.Pojo;
+package de.sobotta.DTO;
 
+import jakarta.validation.constraints.NotBlank;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+public class CustomerDTO {
 
-@Document(collection = "customer")
-public class Customer {
-    private String id;
+    @NotBlank(message = "First name is mandatory")
     private String firstName;
+
+    @NotBlank(message = "Last name is mandatory")
     private String lastName;
 
-    private Address address;
-    private PaymentMethod paymentMethod;
+    private AddressDTO address;
 
-    public Customer() {
+    private PaymentMethodDTO paymentMethod;
+
+    public CustomerDTO() {
     }
 
-    public Customer(String firstName, String lastName, Address address, PaymentMethod paymentMethod) {
+    public CustomerDTO(String firstName, String lastName, AddressDTO address, PaymentMethodDTO paymentMethod) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.paymentMethod = paymentMethod;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -46,27 +40,26 @@ public class Customer {
         this.lastName = lastName;
     }
 
-    public Address getAddress() {
+    public AddressDTO getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(AddressDTO address) {
         this.address = address;
     }
 
-    public PaymentMethod getPaymentMethod() {
+    public PaymentMethodDTO getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
+    public void setPaymentMethod(PaymentMethodDTO paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "id='" + id + '\'' +
-                ", firstName='" + firstName + '\'' +
+        return "CustomerDTO{" +
+                "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", address=" + address +
                 ", paymentMethod=" + paymentMethod +

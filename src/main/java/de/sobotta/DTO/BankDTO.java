@@ -1,11 +1,16 @@
-package de.sobotta.Pojo;
+package de.sobotta.DTO;
 
-public class Bank {
-
+public class BankDTO {
     private String name;
     private String area;
 
-    // Getter und Setter
+    public BankDTO() {
+    }
+
+    public BankDTO(String name, String area) {
+        this.name = name;
+        this.area = area;
+    }
 
     public String getName() {
         return name;
@@ -25,9 +30,9 @@ public class Bank {
 
     @Override
     public String toString() {
-        return "Bank{" +
-                "name='" + name + '\'' +
-                ", area='" + area + '\'' +
+        return "BankDTO{" +
+                "bankName='" + name + '\'' +
+                ", bankArea='" + area + '\'' +
                 '}';
     }
 }

@@ -1,16 +1,16 @@
-package de.sobotta.Pojo;
+package de.sobotta.Response;
 
-public class Address {
+public class AddressResponse {
     private String street;
     private String houseNumber;
     private String zip;
     private String city;
     private String country;
 
-    public Address() {
+    public AddressResponse() {
     }
 
-    public Address(String street, String houseNumber, String zip, String city, String country) {
+    public AddressResponse(String street, String houseNumber, String zip, String city, String country) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.zip = zip;
@@ -57,15 +57,5 @@ public class Address {
     public void setCountry(String country) {
         this.country = country;
     }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "street='" + street + '\'' +
-                ", houseNumber='" + houseNumber + '\'' +
-                ", zip='" + zip + '\'' +
-                ", city='" + city + '\'' +
-                ", country='" + country + '\'' +
-                '}';
-    }
 }
+

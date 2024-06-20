@@ -1,12 +1,18 @@
-package de.sobotta.Pojo;
+package de.sobotta.DTO;
 
-public class PaymentMethod {
-
+public class PaymentMethodDTO {
     private String iban;
     private String bic;
-    private Bank bank;
+    private BankDTO bank;
 
-    // Getter und Setter
+    public PaymentMethodDTO() {
+    }
+
+    public PaymentMethodDTO(String iban, String bic, BankDTO bank) {
+        this.iban = iban;
+        this.bic = bic;
+        this.bank = bank;
+    }
 
     public String getIban() {
         return iban;
@@ -24,17 +30,17 @@ public class PaymentMethod {
         this.bic = bic;
     }
 
-    public Bank getBank() {
+    public BankDTO getBank() {
         return bank;
     }
 
-    public void setBank(Bank bank) {
+    public void setBank(BankDTO bank) {
         this.bank = bank;
     }
 
     @Override
     public String toString() {
-        return "PaymentMethod{" +
+        return "PaymentMethodDTO{" +
                 "iban='" + iban + '\'' +
                 ", bic='" + bic + '\'' +
                 ", bank=" + bank +

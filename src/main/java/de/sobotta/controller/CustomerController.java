@@ -1,8 +1,13 @@
 package de.sobotta.controller;
 
+import de.sobotta.DTO.CustomerDTO;
 import de.sobotta.Pojo.Customer;
+import de.sobotta.Response.CustomerResponse;
 import de.sobotta.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,32 +24,39 @@ public class CustomerController {
     }
 
     @PostMapping
-    public void createNewAlbum(@RequestBody Customer customer) {
-        customerService.createCustomer(customer);
+    public ResponseEntity<Void> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
+        System.out.println("Inside createCustomer" + customerDTO);
+        customerService.createCustomer(customerDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
-    public List<Customer> getAll() {
-        return customerService.getAllCustomers();
+    public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
+        List<CustomerResponse> customers = customerService.getAllCustomers();
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
-    @GetMapping("/{lastname}")
-    public List<Customer> findByLastName(@PathVariable String lastname) {
-        return customerService.getByLastName(lastname);
+    @GetMapping("/lastname/{lastname}")
+    public ResponseEntity<List<CustomerResponse>> findByLastName(@PathVariable String lastname) {
+        List<CustomerResponse> customers = customerService.getByLastName(lastname);
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
-    public Customer findById(@PathVariable String id) {
-        return customerService.getCustomerById(id).orElseThrow(RuntimeException::new);
+    public ResponseEntity<CustomerDTO> findById(@PathVariable String id) {
+        CustomerDTO customer = customerService.getCustomerById(id);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
-    @PutMapping("{id}")
-    public void updateCustomer(@PathVariable String id, @RequestBody Customer customer) {
-        customerService.updateCustomer(id, customer);
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateCustomer(@PathVariable String id, @Valid @RequestBody CustomerDTO customerDTO) {
+        customerService.updateCustomer(id, customerDTO);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable String id) {
         customerService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
